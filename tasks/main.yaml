@@ -6,3 +6,12 @@
     owner: "{{ proxmox_ssl_script_owner }}"
     group: "{{ proxmox_ssl_script_group }}"
     mode: "{{ proxmox_ssl_script_mode }}"
+
+- name: configure cron
+  ansible.builtin.cron:
+    name: "{{ proxmox_ssl_cron_name }}"
+    special_time: "{{ proxmox_ssl_cron_frequency }}"
+    user: "{{ proxmox_ssl_script_owner }}"
+    job: "{{ proxmox_ssl_script_dir }}/{{ proxmox_ssl_script_name }}"
+    cron_file: "{{ proxmox_ssl_cron_file }}"
+

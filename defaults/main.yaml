@@ -11,3 +11,9 @@ proxmox_ssl_script_mode: '0700'
 # Copy certificate/key to
 proxmox_ssl_tmp_cert: /tmp/proxmox_ssl_tmp_cert
 proxmox_ssl_tmp_key: /tmp/proxmox_ssl_tmp_key
+
+# Cron
+proxmox_ssl_cron_name: 'install pveproxy certificate'
+proxmox_ssl_cron_file: 'install-pveproxy-certificate'
+proxmox_ssl_cron_frequency: daily
+
