@@ -1,0 +1,13 @@
+---
+# Install location for script
+proxmox_ssl_script_dir: /usr/local/sbin/
+proxmox_ssl_script_name: install-ssh-cert.sh
+
+# Permissions
+proxmox_ssl_script_owner: root
+proxmox_ssl_script_group: root
+proxmox_ssl_script_mode: '0700'
+
+# Copy certificate/key to
+proxmox_ssl_tmp_cert: /tmp/proxmox_ssl_tmp_cert
+proxmox_ssl_tmp_key: /tmp/proxmox_ssl_tmp_key

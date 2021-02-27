@@ -1,0 +1,8 @@
+---
+- name: create script
+  ansible.builtin.template:
+    src: ../templates/install-ssh-cert.sh.j2
+    dest: "{{ proxmox_ssl_script_dir }}/{{ proxmox_ssl_script_name }}"
+    owner: "{{ proxmox_ssl_script_owner }}"
+    group: "{{ proxmox_ssl_script_group }}"
+    mode: "{{ proxmox_ssl_script_mode }}"

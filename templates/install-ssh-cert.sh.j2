@@ -1,0 +1,6 @@
+#!/bin/bash
+scp {{ proxmox_ssl_ssh_user }}@{{ proxmox_ssl_ssh_host }}:{{ proxmox_ssl_ssh_cert_path }} {{ proxmox_ssl_tmp_cert }}
+scp {{ proxmox_ssl_ssh_user }}@{{ proxmox_ssl_ssh_host }}:{{ proxmox_ssl_ssh_key_path }} {{ proxmox_ssl_tmp_key }}
+pvenode cert set {{ proxmox_ssl_tmp_cert }} {{ proxmox_ssl_tmp_key }} -force -restart
+rm -f {{ proxmox_ssl_tmp_cert }}
+rm -f {{ proxmox_ssl_tmp_key }}
