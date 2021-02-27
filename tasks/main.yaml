@@ -15,3 +15,9 @@
     job: "{{ proxmox_ssl_script_dir }}/{{ proxmox_ssl_script_name }}"
     cron_file: "{{ proxmox_ssl_cron_file }}"
 
+- name: run script
+  ansible.builtin.command:
+    cmd: "{{ proxmox_ssl_script_dir }}/{{ proxmox_ssl_script_name }}"
+  become: yes
+  become_user: "{{ proxmox_ssl_script_owner }}"
+  when: proxmox_ssl_run_now
