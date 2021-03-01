@@ -4,7 +4,7 @@ An Ansible role for setting up a cron job to fetch an SSL certificate via SSH an
 
 ## Requirements
 
-- SSH access to certificate source using public key authentication
+- SSH access to certificate source using password-less public key authentication
 - Full certificate chain in PEM format
 - Private key in PEM format
 ## Role Variables
