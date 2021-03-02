@@ -12,7 +12,7 @@
     name: "{{ proxmox_ssl_cron_name }}"
     special_time: "{{ proxmox_ssl_cron_frequency }}"
     user: "{{ proxmox_ssl_script_owner }}"
-    job: "{{ proxmox_ssl_script_dir }}/{{ proxmox_ssl_script_name }}"
+    job: "{{ proxmox_ssl_script_dir | regex_replace('\\/$', '') }}/{{ proxmox_ssl_script_name }}"
     cron_file: "{{ proxmox_ssl_cron_file }}"
 
 - name: run script
