@@ -17,5 +17,8 @@ proxmox_ssl_cron_name: 'install pveproxy certificate'
 proxmox_ssl_cron_file: 'install-pveproxy-certificate'
 proxmox_ssl_cron_frequency: daily
 
+# Compare signature before installing
+proxmox_ssl_compare_signature: yes
+
 # Run script immediately
 proxmox_ssl_run_now: no

@@ -20,19 +20,20 @@ An Ansible role for setting up a cron job to fetch an SSL certificate via SSH an
 
 ### Optional
 
-| Variable                     | Default                        | Comments                        |
-| :---                         | :---                           | :---                            |
-| `proxmox_ssl_script_dir`     | /usr/local/sbin/               | Install script into directory   |
-| `proxmox_ssl_script_name`    | install-ssh-cert.sh            | File name for script            |
-| `proxmox_ssl_script_owner`   | root                           | Owner for script                |
-| `proxmox_ssl_script_group`   | root                           | Group for script                |
-| `proxmox_ssl_script_mode`    | 0700                           | Mode/permissions for script     |
-| `proxmox_ssl_tmp_cert`       | /tmp/proxmox_ssl_tmp_cert      | Temp file for certificate chain |
-| `proxmox_ssl_tmp_key`        | /tmp/proxmox_ssl_tmp_key       | Temp file for private key       |
-| `proxmox_ssl_cron_name`      | 'install pveproxy certificate' | Name of cron job                |
-| `proxmox_ssl_cron_file`      | 'install-pveproxy-certificate' | Filename for cron job           |
-| `proxmox_ssl_cron_frequency` | daily                          | Cron frequency                  |
-| `proxmox_ssl_run_now`        | no                             | Run script immediately          |
+| Variable                        | Default                        | Comments                          |
+| :---                            | :---                           | :---                              |
+| `proxmox_ssl_script_dir`        | /usr/local/sbin/               | Install script into directory     |
+| `proxmox_ssl_script_name`       | install-ssh-cert.sh            | File name for script              |
+| `proxmox_ssl_script_owner`      | root                           | Owner for script                  |
+| `proxmox_ssl_script_group`      | root                           | Group for script                  |
+| `proxmox_ssl_script_mode`       | 0700                           | Mode/permissions for script       |
+| `proxmox_ssl_tmp_cert`          | /tmp/proxmox_ssl_tmp_cert      | Temp file for certificate chain   |
+| `proxmox_ssl_tmp_key`           | /tmp/proxmox_ssl_tmp_key       | Temp file for private key         |
+| `proxmox_ssl_cron_name`         | 'install pveproxy certificate' | Name of cron job                  |
+| `proxmox_ssl_cron_file`         | 'install-pveproxy-certificate' | Filename for cron job             |
+| `proxmox_ssl_cron_frequency`    | daily                          | Cron frequency                    |
+| `proxmox_ssl_run_now`           | no                             | Run script immediately            |
+| `proxmox_ssl_compare_signature` | yes                            | Only install if signatures differ |
 
 ## Example - Installing Let's Encrypt wildcard certificate issued to pfSense
 

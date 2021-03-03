@@ -3,6 +3,7 @@
 scp {{ proxmox_ssl_ssh_user }}@{{ proxmox_ssl_ssh_host }}:{{ proxmox_ssl_ssh_cert_path }} {{ proxmox_ssl_tmp_cert }}
 scp {{ proxmox_ssl_ssh_user }}@{{ proxmox_ssl_ssh_host }}:{{ proxmox_ssl_ssh_key_path }} {{ proxmox_ssl_tmp_key }}
 
+{% if proxmox_ssl_compare_signature %}
 # Get signature of current certificate
 current=`pvenode cert info --noborder | awk '/pveproxy-ssl.pem/{getline; print}' | awk '{print $2}'`
 
@@ -15,6 +16,10 @@ then
   # Install new certificate if signature changed
   pvenode cert set {{ proxmox_ssl_tmp_cert }} {{ proxmox_ssl_tmp_key }} -force -restart
 fi
+{% else %}
+# Install certificate
+pvenode cert set {{ proxmox_ssl_tmp_cert }} {{ proxmox_ssl_tmp_key }} -force -restart
+{% endif %}
 
 # Remove temporary files
 rm -f {{ proxmox_ssl_tmp_cert }}
