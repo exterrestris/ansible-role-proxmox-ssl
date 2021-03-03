@@ -1,6 +1,21 @@
 #!/bin/bash
+# Fetch new certificate and key
 scp {{ proxmox_ssl_ssh_user }}@{{ proxmox_ssl_ssh_host }}:{{ proxmox_ssl_ssh_cert_path }} {{ proxmox_ssl_tmp_cert }}
 scp {{ proxmox_ssl_ssh_user }}@{{ proxmox_ssl_ssh_host }}:{{ proxmox_ssl_ssh_key_path }} {{ proxmox_ssl_tmp_key }}
-pvenode cert set {{ proxmox_ssl_tmp_cert }} {{ proxmox_ssl_tmp_key }} -force -restart
+
+# Get signature of current certificate
+current=`pvenode cert info --noborder | awk '/pveproxy-ssl.pem/{getline; print}' | awk '{print $2}'`
+
+# Calc signature of new certificate
+replace=`openssl x509 -in {{ proxmox_ssl_tmp_cert }} -fingerprint -noout -sha256 | cut -f2 -d'='`
+
+# Compare signatures
+if [ "$current" != "$replace" ]
+then
+  # Replace certificate if different
+  pvenode cert set {{ proxmox_ssl_tmp_cert }} {{ proxmox_ssl_tmp_key }} -force -restart
+fi
+
+# Remove temporary files
 rm -f {{ proxmox_ssl_tmp_cert }}
 rm -f {{ proxmox_ssl_tmp_key }}
