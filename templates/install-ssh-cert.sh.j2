@@ -12,7 +12,7 @@ replace=`openssl x509 -in {{ proxmox_ssl_tmp_cert }} -fingerprint -noout -sha256
 # Compare signatures
 if [ "$current" != "$replace" ]
 then
-  # Replace certificate if different
+  # Install new certificate if signature changed
   pvenode cert set {{ proxmox_ssl_tmp_cert }} {{ proxmox_ssl_tmp_key }} -force -restart
 fi
 
