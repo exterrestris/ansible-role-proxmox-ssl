@@ -3,23 +3,25 @@
 scp {{ proxmox_ssl_ssh_user }}@{{ proxmox_ssl_ssh_host }}:{{ proxmox_ssl_ssh_cert_path }} {{ proxmox_ssl_tmp_cert }}
 scp {{ proxmox_ssl_ssh_user }}@{{ proxmox_ssl_ssh_host }}:{{ proxmox_ssl_ssh_key_path }} {{ proxmox_ssl_tmp_key }}
 
+if [ -s {{ proxmox_ssl_tmp_cert }} ] && [ -s {{ proxmox_ssl_tmp_key }} ]; then
 {% if proxmox_ssl_compare_signature %}
-# Get signature of current certificate
-current=`pvenode cert info --noborder | awk '/pveproxy-ssl.pem/{getline; print}' | awk '{print $2}'`
+  # Get signature of current certificate
+  current=`pvenode cert info --noborder | awk '/pveproxy-ssl.pem/{getline; print}' | awk '{print $2}'`
 
-# Calc signature of new certificate
-replace=`openssl x509 -in {{ proxmox_ssl_tmp_cert }} -fingerprint -noout -sha256 | cut -f2 -d'='`
+  # Calc signature of new certificate
+  replace=`openssl x509 -in {{ proxmox_ssl_tmp_cert }} -fingerprint -noout -sha256 | cut -f2 -d'='`
 
-# Compare signatures
-if [ "$current" != "$replace" ]
-then
-  # Install new certificate if signature changed
-  pvenode cert set {{ proxmox_ssl_tmp_cert }} {{ proxmox_ssl_tmp_key }} -force -restart
-fi
+  # Compare signatures
+  if [ "$current" != "$replace" ]
+  then
+    # Install new certificate if signature changed
+    pvenode cert set {{ proxmox_ssl_tmp_cert }} {{ proxmox_ssl_tmp_key }} -force -restart
+  fi
 {% else %}
-# Install certificate
-pvenode cert set {{ proxmox_ssl_tmp_cert }} {{ proxmox_ssl_tmp_key }} -force -restart
+  # Install certificate
+  pvenode cert set {{ proxmox_ssl_tmp_cert }} {{ proxmox_ssl_tmp_key }} -force -restart
 {% endif %}
+fi
 
 # Remove temporary files
 rm -f {{ proxmox_ssl_tmp_cert }}
