@@ -1,7 +1,7 @@
 ---
 # Install location for script
 proxmox_ssl_script_dir: /usr/local/sbin/
-proxmox_ssl_script_name: install-ssh-cert.sh
+proxmox_ssl_script_name: install-proxmox-ssh-cert.sh
 
 # Permissions
 proxmox_ssl_script_owner: root

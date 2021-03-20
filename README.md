@@ -23,7 +23,7 @@ An Ansible role for setting up a cron job to fetch an SSL certificate via SSH an
 | Variable                        | Default                        | Comments                          |
 | :---                            | :---                           | :---                              |
 | `proxmox_ssl_script_dir`        | /usr/local/sbin/               | Install script into directory     |
-| `proxmox_ssl_script_name`       | install-ssh-cert.sh            | File name for script              |
+| `proxmox_ssl_script_name`       | install-proxmox-ssh-cert.sh    | File name for script              |
 | `proxmox_ssl_script_owner`      | root                           | Owner for script                  |
 | `proxmox_ssl_script_group`      | root                           | Group for script                  |
 | `proxmox_ssl_script_mode`       | 0700                           | Mode/permissions for script       |
