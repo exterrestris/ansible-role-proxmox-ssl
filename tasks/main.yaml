@@ -15,6 +15,24 @@
     job: "{{ proxmox_ssl_script_dir | regex_replace('\\/$', '') }}/{{ proxmox_ssl_script_name }}"
     cron_file: "{{ proxmox_ssl_cron_file }}"
 
+- name: generate SSH key
+  ansible.builtin.user:
+    name: "{{ proxmox_ssl_script_owner }}"
+    generate_ssh_key: yes
+    ssh_key_type: "{{ proxmox_ssl_generated_ssh_key_type }}"
+    ssh_key_bits: "{{ proxmox_ssl_generated_ssh_key_bits }}"
+    ssh_key_file: ".ssh/{{ proxmox_ssl_generated_ssh_key }}"
+  register: "user_info"
+  when: proxmox_ssl_generate_ssh_key
+
+- name: install SSH key on remote hosts
+  ansible.posix.authorized_key:
+    user: "{{ proxmox_ssl_ssh_user }}"
+    state: present
+    key: "{{ user_info.ssh_public_key if proxmox_ssl_generate_ssh_key else lookup('file', proxmox_ssl_ssh_key) }}"
+  delegate_to: "{{ proxmox_ssl_ssh_host }}"
+  when: proxmox_ssl_ssh_key_install_remote
+
 - name: run script
   ansible.builtin.command:
     cmd: "{{ proxmox_ssl_script_dir }}/{{ proxmox_ssl_script_name }}"

@@ -1,7 +1,7 @@
 #!/bin/bash
 # Fetch new certificate and key
-scp {{ proxmox_ssl_ssh_user }}@{{ proxmox_ssl_ssh_host }}:{{ proxmox_ssl_ssh_cert_path }} {{ proxmox_ssl_tmp_cert }}
-scp {{ proxmox_ssl_ssh_user }}@{{ proxmox_ssl_ssh_host }}:{{ proxmox_ssl_ssh_key_path }} {{ proxmox_ssl_tmp_key }}
+scp -i {{ proxmox_ssl_ssh_key}} {{ proxmox_ssl_ssh_user }}@{{ proxmox_ssl_ssh_host }}:{{ proxmox_ssl_ssh_cert_path }} {{ proxmox_ssl_tmp_cert }}
+scp -i {{ proxmox_ssl_ssh_key}} {{ proxmox_ssl_ssh_user }}@{{ proxmox_ssl_ssh_host }}:{{ proxmox_ssl_ssh_key_path }} {{ proxmox_ssl_tmp_key }}
 
 if [ -s {{ proxmox_ssl_tmp_cert }} ] && [ -s {{ proxmox_ssl_tmp_key }} ]; then
 {% if proxmox_ssl_compare_signature %}
