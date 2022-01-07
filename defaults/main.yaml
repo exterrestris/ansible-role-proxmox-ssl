@@ -40,3 +40,6 @@ proxmox_ssl_ssh_key: "/root/.ssh/{{ proxmox_ssl_generated_ssh_key if proxmox_ssl
 
 # Install SSH key on remote hosts
 proxmox_ssl_ssh_key_install_remote: yes
+
+# Remote host python interpreter
+proxmox_ssl_ssh_host_python: "{{ ansible_python_interpreter }}"

@@ -32,6 +32,8 @@
     key: "{{ user_info.ssh_public_key if proxmox_ssl_generate_ssh_key else lookup('file', proxmox_ssl_ssh_key) }}"
   delegate_to: "{{ proxmox_ssl_ssh_host }}"
   when: proxmox_ssl_ssh_key_install_remote
+  vars:
+    - ansible_python_interpreter: "{{ proxmox_ssl_ssh_host_python }}"
 
 - name: run script
   ansible.builtin.command:
