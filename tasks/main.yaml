@@ -1,4 +1,12 @@
 ---
+- name: ensure user exists
+  ansible.builtin.user:
+    name: "{{ proxmox_ssl_script_owner }}"
+    groups:
+      - "{{ proxmox_ssl_script_group }}"
+    append: yes
+  register: _proxmox_ssl_script_owner_info
+
 - name: create script
   ansible.builtin.template:
     src: ../templates/install-ssh-cert.sh.j2
@@ -25,7 +33,7 @@
   register: "user_info"
   when: proxmox_ssl_generate_ssh_key
 
-- name: install SSH key on remote hosts
+- name: install SSH key on remote host
   ansible.posix.authorized_key:
     user: "{{ proxmox_ssl_ssh_user }}"
     state: present
@@ -34,6 +42,14 @@
   when: proxmox_ssl_ssh_key_install_remote
   vars:
     - ansible_python_interpreter: "{{ proxmox_ssl_ssh_host_python }}"
+
+- name: add remote host to known_hosts
+  ansible.builtin.known_hosts:
+    name: "{{ proxmox_ssl_ssh_host }}"
+    key: "{{ lookup('pipe', 'ssh-keyscan -t' + proxmox_ssh_ssh_known_hosts_remote_key_type + ' ' + proxmox_ssl_ssh_host ) }}"
+    path: "{{ _proxmox_ssl_script_owner_info.home }}/.ssh/known_hosts"
+    state: present
+  when: proxmox_ssl_ssh_add_remote_to_known_hosts
 
 - name: run script
   ansible.builtin.command:

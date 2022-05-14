@@ -38,6 +38,8 @@ An Ansible role for setting up a cron job to fetch an SSL certificate via SSH an
 | `proxmox_ssl_generated_ssh_key` | `id_proxmox_ssl` | Name of generated SSH key | 
 | `proxmox_ssl_ssh_key` | `/root/.ssh/{`*`proxmox_ssl_generated_ssh_key`*`\|id_rsa}` | Path to SSH key for script to use |
 | `proxmox_ssl_ssh_key_install_remote` | `yes` | Install specified SSH key on remote hosts. Requires remote hosts to be defined in inventory |
+| `proxmox_ssl_ssh_add_remote_to_known_hosts` | `yes` | Add remote hosts to known_hosts. Requires remote hosts to be defined in inventory |
+| `proxmox_ssh_ssh_known_hosts_remote_key_type` | `ed25519` | Key type to add to known_hosts. Acceptable values are `ed25519`, `ecdsa` and `rsa` |
 
 ## Example - Installing Let's Encrypt wildcard certificate issued to pfSense
 
