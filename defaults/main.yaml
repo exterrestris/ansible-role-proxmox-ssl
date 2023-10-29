@@ -48,4 +48,4 @@ proxmox_ssl_ssh_add_remote_to_known_hosts: no
 proxmox_ssh_ssh_known_hosts_remote_key_type: ed25519
 
 # Remote host python interpreter
-proxmox_ssl_ssh_host_python: "{{ ansible_python_interpreter }}"
+proxmox_ssl_ssh_host_python: auto
