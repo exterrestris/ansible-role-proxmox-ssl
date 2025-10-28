@@ -41,7 +41,7 @@
   delegate_to: "{{ proxmox_ssl_ssh_host }}"
   when: proxmox_ssl_ssh_key_install_remote
   vars:
-    - ansible_python_interpreter: "{{ proxmox_ssl_ssh_host_python }}"
+    ansible_python_interpreter: "{{ proxmox_ssl_ssh_host_python }}"
 
 - name: add remote host to known_hosts
   ansible.builtin.known_hosts:
@@ -54,6 +54,6 @@
 - name: run script
   ansible.builtin.command:
     cmd: "{{ proxmox_ssl_script_dir }}/{{ proxmox_ssl_script_name }}"
-  become: yes
+  become: true
   become_user: "{{ proxmox_ssl_script_owner }}"
   when: proxmox_ssl_run_now
