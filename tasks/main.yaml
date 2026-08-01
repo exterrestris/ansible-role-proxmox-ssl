@@ -7,13 +7,8 @@
     append: yes
   register: _proxmox_ssl_script_owner_info
 
-- name: create script
-  ansible.builtin.template:
-    src: ../templates/install-ssh-cert.sh.j2
-    dest: "{{ proxmox_ssl_script_dir }}/{{ proxmox_ssl_script_name }}"
-    owner: "{{ proxmox_ssl_script_owner }}"
-    group: "{{ proxmox_ssl_script_group }}"
-    mode: "{{ proxmox_ssl_script_mode }}"
+- name: generate script
+  ansible.builtin.include_tasks: "{{ proxmox_ssl_certificate_source }}.yaml"
 
 - name: configure cron
   ansible.builtin.cron:
@@ -22,34 +17,6 @@
     user: "{{ proxmox_ssl_script_owner }}"
     job: "{{ proxmox_ssl_script_dir | regex_replace('\\/$', '') }}/{{ proxmox_ssl_script_name }}"
     cron_file: "{{ proxmox_ssl_cron_file }}"
-
-- name: generate SSH key
-  ansible.builtin.user:
-    name: "{{ proxmox_ssl_script_owner }}"
-    generate_ssh_key: yes
-    ssh_key_type: "{{ proxmox_ssl_generated_ssh_key_type }}"
-    ssh_key_bits: "{{ proxmox_ssl_generated_ssh_key_bits }}"
-    ssh_key_file: ".ssh/{{ proxmox_ssl_generated_ssh_key }}"
-  register: "user_info"
-  when: proxmox_ssl_generate_ssh_key
-
-- name: install SSH key on remote host
-  ansible.posix.authorized_key:
-    user: "{{ proxmox_ssl_ssh_user }}"
-    state: present
-    key: "{{ user_info.ssh_public_key if proxmox_ssl_generate_ssh_key else lookup('file', proxmox_ssl_ssh_key) }}"
-  delegate_to: "{{ proxmox_ssl_ssh_host }}"
-  when: proxmox_ssl_ssh_key_install_remote
-  vars:
-    ansible_python_interpreter: "{{ proxmox_ssl_ssh_host_python }}"
-
-- name: add remote host to known_hosts
-  ansible.builtin.known_hosts:
-    name: "{{ proxmox_ssl_ssh_host }}"
-    key: "{{ lookup('pipe', 'ssh-keyscan -t' + proxmox_ssh_ssh_known_hosts_remote_key_type + ' ' + proxmox_ssl_ssh_host ) }}"
-    path: "{{ _proxmox_ssl_script_owner_info.home }}/.ssh/known_hosts"
-    state: present
-  when: proxmox_ssl_ssh_add_remote_to_known_hosts
 
 - name: run script
   ansible.builtin.command:

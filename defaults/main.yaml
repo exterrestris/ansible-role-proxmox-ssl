@@ -23,6 +23,9 @@ proxmox_ssl_compare_signature: yes
 # Run script immediately
 proxmox_ssl_run_now: no
 
+# Where to fetch certificate from
+proxmox_ssl_certificate_source: ssh
+
 # Generate a new SSH key for use by script
 proxmox_ssl_generate_ssh_key: yes
 
