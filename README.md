@@ -1,39 +1,49 @@
 # Ansible role `exterrestris.proxmox_ssl`
 
-An Ansible role for setting up a cron job to fetch an SSL certificate via SSH and install it into Proxmox using `pvenode`.
+An Ansible role for setting up a cron job to fetch an SSL certificate from CertMate or via SSH and then install it into Proxmox VE or Proxmox Backup Server.
 
 ## Requirements
 
-- SSH access to certificate source using password-less public key authentication
-- Full certificate chain in PEM format
-- Private key in PEM format
+- SSH
+  - SSH access to certificate source using password-less public key authentication
+  - Full certificate chain in PEM format
+  - Private key in PEM format
+- CertMate
+  - API token
+
 ## Role Variables
 
-### Required
+### Common
 
-| Variable                    | Comments                                                |
-| :---                        | :---                                                    |
-| `proxmox_ssl_ssh_host`      | Hostname/IP address from where to fetch the certificate |
-| `proxmox_ssl_ssh_user`      | Username to use on `proxmox_ssl_ssh_host`               |
-| `proxmox_ssl_ssh_cert_path` | Path to the full certificate chain in PEM format        |
-| `proxmox_ssl_ssh_key_path`  | Path to the certificate private key in PEM format       |
+| Variable | Default | Comments |
+| :--- | :--- | :--- |
+| `proxmox_ssl_script_dir` | `/usr/local/sbin/` | Install script into directory |
+| `proxmox_ssl_script_name` | `install-proxmox-ssh-cert.sh` | File name for script |
+| `proxmox_ssl_script_owner` | `root` | Owner for script |
+| `proxmox_ssl_script_group` | `root` | Group for script |
+| `proxmox_ssl_script_mode` | `0700` | Mode/permissions for script |
+| `proxmox_ssl_tmp_cert` | `/tmp/proxmox_ssl_tmp_cert` | Temp file for certificate chain |
+| `proxmox_ssl_tmp_key` | `/tmp/proxmox_ssl_tmp_key` | Temp file for private key |
+| `proxmox_ssl_cron_name` | 'install pveproxy certificate' | Name of cron job |
+| `proxmox_ssl_cron_file` | 'install-pveproxy-certificate' | Filename for cron job |
+| `proxmox_ssl_cron_frequency` | daily | Cron frequency |
+| `proxmox_ssl_run_now` | no | Run script immediately |
+| `proxmox_ssl_compare_signature` | yes | Only install if signatures differ |
 
-### Optional
+### CertMate
+| Variable | Default | Comments |
+| :--- | :--- | :--- |
+| `proxmox_ssl_certmate_host` | *Required* | CertMate host address |
+| `proxmox_ssl_certmate_token` | *Required* | API token for CertMate |
+| `proxmox_ssl_certmate_cert` | *Required* | Name of the certificate to fetch |
 
-| Variable                        | Default                        | Comments                          |
-| :---                            | :---                           | :---                              |
-| `proxmox_ssl_script_dir`        | /usr/local/sbin/               | Install script into directory     |
-| `proxmox_ssl_script_name`       | install-proxmox-ssh-cert.sh    | File name for script              |
-| `proxmox_ssl_script_owner`      | root                           | Owner for script                  |
-| `proxmox_ssl_script_group`      | root                           | Group for script                  |
-| `proxmox_ssl_script_mode`       | 0700                           | Mode/permissions for script       |
-| `proxmox_ssl_tmp_cert`          | /tmp/proxmox_ssl_tmp_cert      | Temp file for certificate chain   |
-| `proxmox_ssl_tmp_key`           | /tmp/proxmox_ssl_tmp_key       | Temp file for private key         |
-| `proxmox_ssl_cron_name`         | 'install pveproxy certificate' | Name of cron job                  |
-| `proxmox_ssl_cron_file`         | 'install-pveproxy-certificate' | Filename for cron job             |
-| `proxmox_ssl_cron_frequency`    | daily                          | Cron frequency                    |
-| `proxmox_ssl_run_now`           | no                             | Run script immediately            |
-| `proxmox_ssl_compare_signature` | yes                            | Only install if signatures differ |
+### SSH
+| Variable | Default | Comments |
+| :--- | :--- | :--- |
+| `proxmox_ssl_ssh_host` | *Required* | Hostname/IP address from where to fetch the certificate |
+| `proxmox_ssl_ssh_user` | *Required* | Username to use on `proxmox_ssl_ssh_host` |
+| `proxmox_ssl_ssh_cert_path` | *Required* | Path to the full certificate chain in PEM format |
+| `proxmox_ssl_ssh_key_path` | *Required* | Path to the certificate private key in PEM format |
 | `proxmox_ssl_generate_ssh_key` | `yes` | Generate an SSH key for script to use | 
 | `proxmox_ssl_generated_ssh_key` | `id_proxmox_ssl` | Name of generated SSH key | 
 | `proxmox_ssl_ssh_key` | `/root/.ssh/{`*`proxmox_ssl_generated_ssh_key`*`\|id_rsa}` | Path to SSH key for script to use |
