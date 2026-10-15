@@ -1,12 +1,12 @@
 #!/bin/bash
 # Fetch new certificate and key
-scp -i {{ proxmox_ssl_ssh_key }} {{ proxmox_ssl_ssh_user }}@{{ proxmox_ssl_ssh_host }}:{{ proxmox_ssl_ssh_cert_path }} {{ proxmox_ssl_tmp_cert }}
-scp -i {{ proxmox_ssl_ssh_key }} {{ proxmox_ssl_ssh_user }}@{{ proxmox_ssl_ssh_host }}:{{ proxmox_ssl_ssh_key_path }} {{ proxmox_ssl_tmp_key }}
+{% include "fetch-" ~ proxmox_ssl_certificate_source ~ "-cert.sh.j2" %}
 
+# Verify new certificate
 if [ -s {{ proxmox_ssl_tmp_cert }} ] && [ -s {{ proxmox_ssl_tmp_key }} ]; then
 {% if proxmox_ssl_compare_signature %}
   # Get signature of current certificate
-  current=`pvenode cert info --noborder | awk '/pveproxy-ssl.pem/{getline; print}' | awk '{print $2}'`
+  current=`proxmox-backup-manager cert info | awk '/Fingerprint/{print}' | awk '{print $3}'`
 
   # Calc signature of new certificate
   replace=`openssl x509 -in {{ proxmox_ssl_tmp_cert }} -fingerprint -noout -sha256 | cut -f2 -d'='`
@@ -15,12 +15,18 @@ if [ -s {{ proxmox_ssl_tmp_cert }} ] && [ -s {{ proxmox_ssl_tmp_key }} ]; then
   if [ "$current" != "$replace" ]
   then
     # Install new certificate if signature changed
-    pvenode cert set {{ proxmox_ssl_tmp_cert }} {{ proxmox_ssl_tmp_key }} -force -restart
+    cp {{ proxmox_ssl_tmp_key }} {{ pbs_key_file }}
+    cp {{ proxmox_ssl_tmp_cert }} {{ pbs_cert_file }}
+    systemctl restart proxmox-backup-proxy
   fi
 {% else %}
   # Install certificate
-  pvenode cert set {{ proxmox_ssl_tmp_cert }} {{ proxmox_ssl_tmp_key }} -force -restart
+  cp {{ proxmox_ssl_tmp_key }} {{ pbs_key_file }}
+  cp {{ proxmox_ssl_tmp_cert }} {{ pbs_cert_file }}
+  systemctl restart proxmox-backup-proxy
 {% endif %}
+else
+  exit 1
 fi
 
 # Remove temporary files

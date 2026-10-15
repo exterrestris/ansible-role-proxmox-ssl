@@ -1,0 +1,3 @@
+---
+pbs_cert_file: /etc/proxmox-backup/proxy.pem
+pbs_key_file: /etc/proxmox-backup/proxy.key

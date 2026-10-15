@@ -1,0 +1,7 @@
+wget --header="Authorization: Bearer {{ proxmox_ssl_certmate_token }}" \
+  "https://{{ proxmox_ssl_certmate_host }}/api/certificates/{{ proxmox_ssl_certmate_cert }}/download/fullchain" \
+  -O {{ proxmox_ssl_tmp_cert }}
+wget --header="Authorization: Bearer {{ proxmox_ssl_certmate_token }}" \
+  "https://{{ proxmox_ssl_certmate_host }}/api/certificates/{{ proxmox_ssl_certmate_cert }}/download/privkey" \
+  -O {{ proxmox_ssl_tmp_key }}
+

@@ -1,4 +1,25 @@
 ---
+- name: detect proxmox ve / backup server
+  block:
+    - name: get installed packages
+      ansible.builtin.package_facts:
+
+    - name: detect proxmox ve
+      ansible.builtin.set_fact:
+        proxmox_type: pve
+      when: "'proxmox-ve' in ansible_facts.packages"
+
+    - name: detect proxmox backup server
+      ansible.builtin.set_fact:
+        proxmox_type: pbs
+      when: "'proxmox-backup-server' in ansible_facts.packages"
+
+- name: check proxmox detected
+  ansible.builtin.fail:
+    msg: 'Target is not a PVE/PBS host'
+  when:
+    - proxmox_type | default(false) is false
+
 - name: ensure user exists
   ansible.builtin.user:
     name: "{{ proxmox_ssl_script_owner }}"
@@ -7,7 +28,18 @@
     append: yes
   register: _proxmox_ssl_script_owner_info
 
-- name: generate script
+- name: include proxmox vars
+  ansible.builtin.include_vars: "{{ proxmox_type }}.yaml"
+
+- name: create script
+  ansible.builtin.template:
+    src: "install-{{ proxmox_type }}-cert.sh.j2"
+    dest: "{{ proxmox_ssl_script_dir }}/{{ proxmox_ssl_script_name }}"
+    owner: "{{ proxmox_ssl_script_owner }}"
+    group: "{{ proxmox_ssl_script_group }}"
+    mode: "{{ proxmox_ssl_script_mode }}"
+
+- name: configure script
   ansible.builtin.include_tasks: "{{ proxmox_ssl_certificate_source }}.yaml"
 
 - name: configure cron

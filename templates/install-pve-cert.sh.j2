@@ -1,12 +1,8 @@
 #!/bin/bash
 # Fetch new certificate and key
-wget --header="Authorization: Bearer {{ proxmox_ssl_certmate_token }}" \
-  "https://{{ proxmox_ssl_certmate_host }}/api/certificates/{{ proxmox_ssl_certmate_cert }}/download/fullchain" \
-  -O {{ proxmox_ssl_tmp_cert }}
-wget --header="Authorization: Bearer {{ proxmox_ssl_certmate_token }}" \
-  "https://{{ proxmox_ssl_certmate_host }}/api/certificates/{{ proxmox_ssl_certmate_cert }}/download/privkey" \
-  -O {{ proxmox_ssl_tmp_key }}
+{% include "fetch-" ~ proxmox_ssl_certificate_source ~ "-cert.sh.j2" %}
 
+# Verify new certificate
 if [ -s {{ proxmox_ssl_tmp_cert }} ] && [ -s {{ proxmox_ssl_tmp_key }} ]; then
 {% if proxmox_ssl_compare_signature %}
   # Get signature of current certificate
@@ -25,6 +21,8 @@ if [ -s {{ proxmox_ssl_tmp_cert }} ] && [ -s {{ proxmox_ssl_tmp_key }} ]; then
   # Install certificate
   pvenode cert set {{ proxmox_ssl_tmp_cert }} {{ proxmox_ssl_tmp_key }} -force -restart
 {% endif %}
+else
+  exit 1
 fi
 
 # Remove temporary files

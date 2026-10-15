@@ -1,0 +1,2 @@
+scp -i {{ proxmox_ssl_ssh_key }} {{ proxmox_ssl_ssh_user }}@{{ proxmox_ssl_ssh_host }}:{{ proxmox_ssl_ssh_cert_path }} {{ proxmox_ssl_tmp_cert }}
+scp -i {{ proxmox_ssl_ssh_key }} {{ proxmox_ssl_ssh_user }}@{{ proxmox_ssl_ssh_host }}:{{ proxmox_ssl_ssh_key_path }} {{ proxmox_ssl_tmp_key }}
